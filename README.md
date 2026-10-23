@@ -239,6 +239,7 @@ Open `http://127.0.0.1:5000`.
 After PostgreSQL/PostGIS is running and the application is configured:
 
 ```powershell
+$env:ALLOW_DEMO_SEED="true"
 python scripts/seed_demo.py
 ```
 
@@ -422,7 +423,7 @@ The included tests intentionally avoid requiring a live PostGIS service so they 
 
 1. Start PostgreSQL + PostGIS.
 2. Run `python run.py`.
-3. Run `python scripts/seed_demo.py`.
+3. Set `$env:ALLOW_DEMO_SEED="true"` and run `python scripts/seed_demo.py` against a local demo database only.
 4. Login as the citizen demo account.
 5. Open **Report Issue**.
 6. Upload a JPG/PNG, enter a description, get GPS or click the map, submit.

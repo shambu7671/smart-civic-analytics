@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
@@ -49,6 +50,10 @@ def demo_image(path, label, idx):
 
 
 def main():
+    if os.getenv("VERCEL") or os.getenv("FLASK_ENV", "").lower() == "production":
+        raise SystemExit("Demo seeding is disabled in production environments.")
+    if os.getenv("ALLOW_DEMO_SEED", "").lower() != "true":
+        raise SystemExit("Set ALLOW_DEMO_SEED=true to seed and reset a local demo database.")
     app = create_app()
     with app.app_context():
         # Reset demo data but preserve schema/configuration.
