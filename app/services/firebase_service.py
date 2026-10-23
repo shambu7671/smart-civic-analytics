@@ -9,6 +9,9 @@ import os
 import json
 import logging
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 from flask import current_app
 
 logger = logging.getLogger(__name__)
@@ -77,12 +80,43 @@ def is_firebase_enabled() -> bool:
 
 
 def verify_firebase_id_token(id_token: str) -> dict:
-    """Verify a Firebase Authentication ID token and return its trusted claims."""
-    app = get_firebase_app()
-    if not app:
-        raise RuntimeError("Firebase Admin is not configured.")
-    import firebase_admin.auth
-    return firebase_admin.auth.verify_id_token(id_token, app=app, check_revoked=True)
+    """Validate an ID token with Firebase Auth and return trusted account data."""
+    api_key = current_app.config.get("FIREBASE_WEB_API_KEY")
+    project_id = current_app.config.get("FIREBASE_PROJECT_ID")
+    if not api_key or not project_id:
+        raise RuntimeError("Firebase Authentication is not configured.")
+    endpoint = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?" + urlencode({"key": api_key})
+    request = Request(
+        endpoint,
+        data=json.dumps({"idToken": id_token}).encode("utf-8"),
+        method="POST",
+        headers={"Content-Type": "application/json"},
+    )
+    try:
+        with urlopen(request, timeout=8) as response:
+            payload = json.loads(response.read(64 * 1024))
+    except (HTTPError, URLError, TimeoutError, ValueError) as exc:
+        # Do not include an ID token or provider response in logs/exceptions.
+        raise ValueError("Firebase rejected the ID token.") from exc
+    users = payload.get("users") or []
+    if not users:
+        raise ValueError("Firebase ID token has no associated account.")
+    user = users[0]
+    if user.get("disabled"):
+        raise ValueError("Firebase account is disabled.")
+    uid = user.get("localId")
+    if not uid:
+        raise ValueError("Firebase response is missing the user ID.")
+    return {
+        "uid": uid,
+        "sub": uid,
+        "aud": project_id,
+        "iss": f"https://securetoken.google.com/{project_id}",
+        "email": user.get("email"),
+        "email_verified": bool(user.get("emailVerified")),
+        "name": user.get("displayName"),
+        "picture": user.get("photoUrl"),
+    }
 
 
 def upload_to_firebase(local_path: str, destination_blob_name: str) -> str:

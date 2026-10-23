@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def _settings():
     base_url = (current_app.config.get("SUPABASE_URL") or "").rstrip("/")
-    service_key = current_app.config.get("SUPABASE_SERVICE_ROLE_KEY")
+    service_key = current_app.config.get("SUPABASE_SECRET_KEY")
     bucket = current_app.config.get("SUPABASE_STORAGE_BUCKET") or "report-images"
     if not base_url or not service_key:
         raise RuntimeError("Supabase Storage is not configured.")
@@ -22,7 +22,7 @@ def _settings():
 def is_supabase_storage_enabled():
     return bool(
         current_app.config.get("SUPABASE_URL")
-        and current_app.config.get("SUPABASE_SERVICE_ROLE_KEY")
+        and current_app.config.get("SUPABASE_SECRET_KEY")
         and current_app.config.get("SUPABASE_STORAGE_BUCKET", "report-images")
     )
 
@@ -32,6 +32,15 @@ def _object_url(base_url, bucket, object_key):
         raise ValueError("Invalid Supabase Storage object path.")
     encoded_key = "/".join(quote(part, safe="") for part in object_key.split("/"))
     return f"{base_url}/storage/v1/object/{quote(bucket, safe='')}/{encoded_key}"
+
+
+def _api_key_headers(secret_key):
+    headers = {"apikey": secret_key}
+    # Current Supabase secret keys are opaque and must not be sent as a Bearer
+    # token. Legacy service-role keys are JWTs and still need Authorization.
+    if not secret_key.startswith("sb_secret_"):
+        headers["Authorization"] = f"Bearer {secret_key}"
+    return headers
 
 
 def upload_image(local_path: str, object_key: str) -> str:
@@ -48,8 +57,7 @@ def upload_image(local_path: str, object_key: str) -> str:
         data=payload,
         method="POST",
         headers={
-            "apikey": service_key,
-            "Authorization": f"Bearer {service_key}",
+            **_api_key_headers(service_key),
             "Content-Type": content_type,
             "x-upsert": "false",
         },
@@ -70,7 +78,7 @@ def download_image_bytes(object_key: str, max_bytes: int, bucket: str = None) ->
     bucket = bucket or configured_bucket
     request = Request(
         _object_url(base_url, bucket, object_key),
-        headers={"apikey": service_key, "Authorization": f"Bearer {service_key}"},
+        headers=_api_key_headers(service_key),
     )
     try:
         with urlopen(request, timeout=12) as response:
@@ -89,7 +97,7 @@ def delete_image(object_key: str, bucket: str = None):
     request = Request(
         _object_url(base_url, bucket or configured_bucket, object_key),
         method="DELETE",
-        headers={"apikey": service_key, "Authorization": f"Bearer {service_key}"},
+        headers=_api_key_headers(service_key),
     )
     try:
         with urlopen(request, timeout=12) as response:
