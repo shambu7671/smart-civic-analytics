@@ -24,31 +24,42 @@ def save_image(file_storage):
         path.unlink(missing_ok=True)
         raise ValueError("Uploaded content is not a readable image.")
 
-    # ── Upload to Firebase Storage if configured ──────────────────────────────
+    # Store cloud uploads in Supabase. Keep a local copy for EXIF and inference
+    # during this invocation; Vercel's local filesystem is ephemeral.
     vercel = bool(os.getenv("VERCEL"))
     try:
-        from app.services.firebase_service import is_firebase_enabled, upload_to_firebase
-        if is_firebase_enabled():
-            firebase_path = upload_to_firebase(str(path), f"uploads/{filename}")
-            if firebase_path:
-                # Keep the local copy available for EXIF extraction in this request.
-                return firebase_path, filename, str(path)
+        from app.services.supabase_storage_service import is_supabase_storage_enabled, upload_image
+        if is_supabase_storage_enabled():
+            storage_path = upload_image(str(path), f"uploads/{filename}")
+            return storage_path, filename, str(path)
         if vercel:
-            raise ValueError("Firebase Storage must be configured for persistent report images on Vercel.")
-    except ValueError:
+            raise ValueError("Supabase Storage must be configured for persistent report images on Vercel.")
+    except (ValueError, RuntimeError) as exc:
         path.unlink(missing_ok=True)
-        raise
+        raise ValueError(str(exc)) from exc
     except Exception:
         if vercel:
             path.unlink(missing_ok=True)
-            raise ValueError("Could not save the report image to Firebase Storage. Please try again.")
+            raise ValueError("Could not save the report image to Supabase Storage. Please try again.")
 
     return str(path), filename, str(path)
 
 
 def _read_image(path, flags):
-    """Read a local image or a Firebase Storage URL without allowing arbitrary hosts."""
+    """Read a local image or a private Supabase/Firebase Storage object."""
     value = str(path)
+    if value.startswith("supabase://"):
+        try:
+            from app.services.supabase_storage_service import download_image_bytes, parse_storage_reference
+            bucket, object_key = parse_storage_reference(value)
+            data = download_image_bytes(
+                object_key,
+                int(current_app.config.get("MAX_CONTENT_LENGTH", 8 * 1024 * 1024)),
+                bucket=bucket,
+            )
+            return cv2.imdecode(np.frombuffer(data, dtype=np.uint8), flags)
+        except Exception:
+            return None
     if value.startswith("gs://"):
         try:
             bucket_and_blob = value[5:]

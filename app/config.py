@@ -55,8 +55,13 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
     JSON_SORT_KEYS = False
 
-    # ── Firebase Storage (optional for cloud uploads) ─────────────────────────
+    # Supabase Storage is private; all object access is mediated by the server.
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+    SUPABASE_STORAGE_BUCKET = os.getenv("SUPABASE_STORAGE_BUCKET", "report-images")
+    # Retained only so existing gs:// report-image references remain readable.
     FIREBASE_STORAGE_BUCKET = os.getenv("FIREBASE_STORAGE_BUCKET")
+    # Firebase Admin credentials are currently used for Firebase Auth token checks.
     FIREBASE_CREDENTIALS_JSON = os.getenv("FIREBASE_CREDENTIALS_JSON")
     FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")
     FIREBASE_WEB_API_KEY = os.getenv("FIREBASE_WEB_API_KEY")

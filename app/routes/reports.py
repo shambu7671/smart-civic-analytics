@@ -157,6 +157,13 @@ def create_report():
                 _os.unlink(local_image_path)
             except OSError:
                 pass
+            if image_path.startswith("supabase://"):
+                try:
+                    from app.services.supabase_storage_service import delete_image, parse_storage_reference
+                    bucket, object_key = parse_storage_reference(image_path)
+                    delete_image(object_key, bucket=bucket)
+                except Exception:
+                    current_app.logger.warning("Could not remove rejected report photo from Supabase Storage.")
             return error(
                 f"Photo location does not match the submitted map pin "
                 f"(distance: {gt['distance_m']:.0f} m, max allowed: "
@@ -209,12 +216,19 @@ def create_report():
     except Exception as exc:
         db.session.rollback()
         current_app.logger.error("Failed to save report: %s", exc)
-        if image_path.startswith(("http://", "https://", "gs://")):
+        if image_path.startswith(("http://", "https://", "gs://", "supabase://")):
             import os as _os
             try:
                 _os.unlink(local_image_path)
             except OSError:
                 pass
+            if image_path.startswith("supabase://"):
+                try:
+                    from app.services.supabase_storage_service import delete_image, parse_storage_reference
+                    bucket, object_key = parse_storage_reference(image_path)
+                    delete_image(object_key, bucket=bucket)
+                except Exception:
+                    current_app.logger.warning("Could not clean up orphaned Supabase report photo.")
         return error("Failed to save report. Please try again.")
     try:
         ai = detect_report(report)
@@ -231,7 +245,7 @@ def create_report():
         cluster_all_reports()
     except Exception as exc:
         current_app.logger.error("Clustering failed after report %s: %s", report.id, exc)
-    if image_path.startswith(("http://", "https://", "gs://")):
+    if image_path.startswith(("http://", "https://", "gs://", "supabase://")):
         import os as _os
         try:
             _os.unlink(local_image_path)

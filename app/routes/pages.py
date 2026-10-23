@@ -125,6 +125,21 @@ def uploaded_file(filename):
             abort(404)
         content_type = mimetypes.guess_type(safe_name)[0] or "application/octet-stream"
         response = send_file(BytesIO(payload), mimetype=content_type, download_name=safe_name)
+    elif report.image_path.startswith("supabase://"):
+        try:
+            from app.services.supabase_storage_service import download_image_bytes, parse_storage_reference
+            bucket, object_key = parse_storage_reference(report.image_path)
+            if bucket != current_app.config.get("SUPABASE_STORAGE_BUCKET", "report-images"):
+                abort(404)
+            payload = download_image_bytes(
+                object_key,
+                int(current_app.config.get("MAX_CONTENT_LENGTH", 8 * 1024 * 1024)),
+                bucket=bucket,
+            )
+        except Exception:
+            abort(404)
+        content_type = mimetypes.guess_type(safe_name)[0] or "application/octet-stream"
+        response = send_file(BytesIO(payload), mimetype=content_type, download_name=safe_name)
     else:
         response = send_from_directory(current_app.config["UPLOAD_FOLDER"], safe_name)
     response.headers["Cache-Control"] = "private, no-store"
