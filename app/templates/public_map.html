@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Public Civic Issue Map | SmartCivic AI{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+  <div>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="badge badge-primary-soft">GIS VIEWER</span>
+      <h1 class="h3 mb-0">Public Civic Issue Map</h1>
+    </div>
+    <p class="text-muted mb-0">
+      Verified and operational civic issues across the municipality. Personal citizen details remain 100% confidential.
+    </p>
+  </div>
+  
+  <div class="d-flex align-items-center gap-3 flex-wrap">
+    <div class="d-flex align-items-center gap-2">
+      <label for="public-category" class="form-label mb-0 small fw-bold text-muted">Category:</label>
+      <select id="public-category" class="form-select form-select-sm" style="width: auto;">
+        <option value="all">All Categories</option>
+        <option value="pothole">Pothole</option>
+        <option value="road-damage">Road Damage</option>
+        <option value="road-crack">Road Crack</option>
+      </select>
+    </div>
+    
+    <div class="form-check form-switch mb-0">
+      <input id="public-heat" class="form-check-input" type="checkbox" role="switch">
+      <label class="form-check-label small fw-semibold" for="public-heat">Issue Heatmap</label>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm overflow-hidden mb-3">
+  <div id="public-map" class="map-box" style="height: 540px; border: none; border-radius: 0;"></div>
+  
+  <!-- Interactive Map Legend Bar -->
+  <div class="card-footer bg-white border-top p-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div class="d-flex align-items-center gap-3 text-muted small">
+      <span class="fw-bold text-dark"><i class="bi bi-info-circle text-primary me-1"></i>Map Legend:</span>
+      <span class="d-inline-flex align-items-center gap-1"><span class="badge priority-high" style="font-size:0.7rem;">HIGH</span> High Priority</span>
+      <span class="d-inline-flex align-items-center gap-1"><span class="badge priority-medium" style="font-size:0.7rem;">MED</span> Medium Priority</span>
+      <span class="d-inline-flex align-items-center gap-1"><span class="badge priority-low" style="font-size:0.7rem;">LOW</span> Low Priority</span>
+    </div>
+    <div class="text-muted small">
+      <i class="bi bi-shield-lock-fill text-success me-1"></i>Privacy Guaranteed: Identity & contact records are not queryable.
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/public-map.js') }}"></script>
+{% endblock %}

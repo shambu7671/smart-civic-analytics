@@ -1,0 +1,11 @@
+# Example Ultralytics dataset configuration.
+# Put a prepared/legally obtained RDD2022-style YOLO export under ai/datasets/rdd2022/.
+# Do not auto-download the dataset from this repository.
+path: ai/datasets/rdd2022
+train: images/train
+val: images/val
+names:
+  0: D00
+  1: D10
+  2: D20
+  3: D40

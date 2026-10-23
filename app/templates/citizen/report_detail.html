@@ -1,0 +1,4 @@
+{% extends "base.html" %}
+{% block title %}Report Details{% endblock %}
+{% block content %}<div id="report-detail" data-report-id="{{ report_id }}"></div>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/report-detail.js') }}"></script>{% endblock %}

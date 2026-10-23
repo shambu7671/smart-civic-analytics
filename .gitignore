@@ -1,0 +1,13 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+!.env.production.example
+.vscode/
+.pytest_cache/
+uploads/*
+!uploads/.gitkeep
+ai/models/*.pt

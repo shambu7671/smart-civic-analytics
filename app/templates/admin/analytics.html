@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Complaint Analytics | SmartCivic AI{% endblock %}
+{% block content %}
+
+<div id="analytics-page">
+  <div class="mb-4">
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="badge badge-primary-soft">ANALYTICS ENGINE</span>
+      <h1 class="h3 mb-0">Complaint & Resolution Analytics</h1>
+    </div>
+    <p class="text-muted mb-0">Operational and research-oriented summaries derived from citizen reports and PostGIS issue clusters.</p>
+  </div>
+
+  <!-- KPI Summary Banner -->
+  <div id="analytics-summary" class="row g-3 mb-4"></div>
+
+  <!-- Analytical Charts -->
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-pie-chart-fill text-primary me-2"></i>Issues by Category</h2>
+          <canvas id="category-chart" style="max-height: 280px;"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Issues by Priority Level</h2>
+          <canvas id="priority-chart" style="max-height: 280px;"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-kanban-fill text-primary me-2"></i>Issues by Operational Status</h2>
+          <canvas id="status-chart" style="max-height: 280px;"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h2 class="h5 mb-3"><i class="bi bi-graph-up text-primary me-2"></i>Reports Over Last 30 Days</h2>
+          <canvas id="reports-chart" style="max-height: 280px;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}

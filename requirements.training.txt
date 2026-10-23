@@ -1,0 +1,5 @@
+# Additional requirements for local YOLO training (RDD2022) and local inference with GUI
+ultralytics==8.3.199
+torch==2.14.0
+torchvision==0.29.0
+opencv-python==4.12.0.88

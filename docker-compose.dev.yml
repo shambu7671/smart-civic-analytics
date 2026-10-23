@@ -1,0 +1,24 @@
+# Development override — no nginx, hot-reload, local volume mounts
+version: "3.9"
+
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  web:
+    build:
+      target: builder
+    command: >
+      python -c "
+      from app import create_app;
+      app = create_app();
+      app.run(host='0.0.0.0', port=8000, debug=True, use_reloader=True)
+      "
+    environment:
+      FLASK_ENV: development
+      DATABASE_URL: postgresql+psycopg2://smartcity:smartcity@db:5432/smart_civic
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"

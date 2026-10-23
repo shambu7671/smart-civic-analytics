@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}Administrator Dashboard | SmartCivic AI{% endblock %}
+{% block content %}
+
+<!-- Header & Action Toolbar -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+  <div>
+    <div class="d-flex align-items-center gap-2 mb-1">
+      <span class="badge badge-primary-soft">COMMAND CENTER</span>
+      <h1 class="h3 mb-0">Administrator Dashboard</h1>
+    </div>
+    <p class="text-muted mb-0">Municipal oversight, duplicate review, automated DBSCAN clustering, and dispatch.</p>
+  </div>
+  
+  <div class="d-flex gap-2">
+    <button id="run-clustering" class="btn btn-outline-primary">
+      <i class="bi bi-diagram-3 me-1"></i>Re-run DBSCAN
+    </button>
+    <a href="/admin/map" class="btn btn-primary">
+      <i class="bi bi-map-fill me-1"></i>Open Admin GIS Map
+    </a>
+  </div>
+</div>
+
+<!-- KPI Summary Metrics -->
+<div id="admin-kpis" class="row g-3 mb-4">
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="card kpi p-3 text-center">
+      <div class="small-muted">Total Reports</div>
+      <div class="value text-primary" id="total-reports">—</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="card kpi p-3 text-center">
+      <div class="small-muted">Civic Issues</div>
+      <div class="value text-primary" id="total-issues">—</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="card kpi p-3 text-center">
+      <div class="small-muted">Needs Review</div>
+      <div class="value text-warning" id="pending-verification">—</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="card kpi p-3 text-center">
+      <div class="small-muted">High Priority</div>
+      <div class="value text-danger" id="high-issues">—</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="card kpi p-3 text-center">
+      <div class="small-muted">In Progress</div>
+      <div class="value text-primary" id="in-progress">—</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-4 col-xl-2">
+    <div class="card kpi p-3 text-center">
+      <div class="small-muted">Resolved</div>
+      <div class="value text-success" id="resolved-issues">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- Visual Analytics Grid -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-6 col-xl-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <h2 class="h6 fw-bold mb-3"><i class="bi bi-pie-chart text-primary me-2"></i>Issues by Category</h2>
+        <canvas id="dash-category-chart" style="max-height: 220px;"></canvas>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-6 col-xl-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <h2 class="h6 fw-bold mb-3"><i class="bi bi-bar-chart-steps text-primary me-2"></i>Issues by Priority</h2>
+        <canvas id="dash-priority-chart" style="max-height: 220px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6 col-xl-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <h2 class="h6 fw-bold mb-3"><i class="bi bi-kanban text-primary me-2"></i>Issues by Status</h2>
+        <canvas id="dash-status-chart" style="max-height: 220px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6 col-xl-3">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <h2 class="h6 fw-bold mb-3"><i class="bi bi-graph-up text-primary me-2"></i>Reports Over Time</h2>
+        <canvas id="dash-reports-chart" style="max-height: 220px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Issues & Admin Tools -->
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h5 mb-0"><i class="bi bi-journal-text text-primary me-2"></i>Recent Clustered Civic Issues</h2>
+          <a href="/admin/issues" class="small fw-semibold text-primary">View All Issues &rarr;</a>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle" id="recent-issues">
+            <thead>
+              <tr>
+                <th>Issue Code</th>
+                <th>Category</th>
+                <th>Reports</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 mb-3"><i class="bi bi-tools text-primary me-2"></i>Administrative Workflows</h2>
+        <div class="d-grid gap-2">
+          <a class="btn btn-outline-primary text-start" href="/admin/duplicates">
+            <i class="bi bi-intersect me-2"></i>Duplicate Candidate Review
+          </a>
+          <a class="btn btn-outline-primary text-start" href="/admin/analytics">
+            <i class="bi bi-speedometer me-2"></i>Deep Analytics Dashboard
+          </a>
+          <a class="btn btn-outline-primary text-start" href="/admin/reports">
+            <i class="bi bi-inbox me-2"></i>All Citizen Reports
+          </a>
+          <a class="btn btn-outline-primary text-start" href="/admin/users">
+            <i class="bi bi-people me-2"></i>User & Role Management
+          </a>
+          <a class="btn btn-outline-primary text-start" href="/admin/settings">
+            <i class="bi bi-sliders me-2"></i>System Threshold Settings
+          </a>
+        </div>
+        
+        <div id="cluster-result" class="alert alert-info mt-3 small mb-0 d-flex align-items-center gap-2">
+          <i class="bi bi-info-circle-fill"></i>
+          <span>DBSCAN triggers automatically after new report submissions.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

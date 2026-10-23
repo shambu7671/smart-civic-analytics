@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Architecture & Methodology | SmartCivic AI{% endblock %}
+{% block content %}
+
+<div class="mb-4">
+  <span class="badge badge-primary-soft mb-2">SYSTEM SPECIFICATION</span>
+  <h1 class="h2 mb-1">Architecture & Technical Methodology</h1>
+  <p class="text-muted">Comprehensive architectural overview of the AI-Based Smart Civic Issue Detection & Complaint Analytics system.</p>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <!-- Research Contribution Card -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4 p-lg-5">
+        <h2 class="h4 mb-3"><i class="bi bi-mortarboard-fill text-primary me-2"></i>Research Motivation & Scope</h2>
+        <p class="text-muted">
+          Conventional municipal complaint portals suffer from ticket fragmentation, duplicate submissions, and subjective priority assignment. 
+          This academic prototype bridges citizen input and automated municipal operations by deploying computer vision, spatial clustering, and multi-factor mathematical prioritization.
+        </p>
+        
+        <div class="row g-3 mt-2">
+          <div class="col-md-6">
+            <div class="p-3 border rounded-3 bg-light">
+              <div class="fw-bold text-dark mb-1"><i class="bi bi-shield-check text-primary me-1"></i>Explainability</div>
+              <p class="text-muted small mb-0">
+                Similarity vectors (distance, category, image hash, TF-IDF text) are stored distinctly, allowing administrators to audit why reports are flagged as duplicates.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 border rounded-3 bg-light">
+              <div class="fw-bold text-dark mb-1"><i class="bi bi-geo-fill text-primary me-1"></i>Meter-Based GIS</div>
+              <p class="text-muted small mb-0">
+                Uses PostgreSQL <code>GEOGRAPHY(POINT, 4326)</code> and PostGIS spatial indexing for real-world haversine distance calculations without planar distortion.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mathematical Pipeline Card -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4 p-lg-5">
+        <h2 class="h4 mb-3"><i class="bi bi-calculator-fill text-primary me-2"></i>Mathematical Formulations</h2>
+        
+        <div class="mb-4">
+          <h3 class="h6 fw-bold text-dark mb-1">1. Priority Score Normalization</h3>
+          <p class="text-muted small">
+            Calculated as a normalized linear combination of four configurable parameters (weights dynamically normalized to sum to 1.0):
+          </p>
+          <div class="p-3 bg-light border rounded-3 font-monospace small">
+            Score = (w_sev &times; Severity) + (w_rep &times; Reports) + (w_age &times; Age) + (w_loc &times; Location)
+          </div>
+        </div>
+
+        <div>
+          <h3 class="h6 fw-bold text-dark mb-1">2. DBSCAN Spatial Clustering</h3>
+          <p class="text-muted small">
+            Groups nearby reports into unified issues using the haversine metric:
+          </p>
+          <div class="p-3 bg-light border rounded-3 font-monospace small">
+            d(lat1, lon1, lat2, lon2) &le; &epsilon; (Configurable threshold: 80 meters)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <!-- Tech Stack Summary -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h2 class="h5 mb-3"><i class="bi bi-stack text-primary me-2"></i>Technology Stack</h2>
+        <ul class="list-unstyled mb-0">
+          <li class="d-flex justify-content-between py-2 border-bottom">
+            <span class="text-muted">Web Framework</span>
+            <span class="fw-semibold text-dark">Flask 3.1 (Python 3.13)</span>
+          </li>
+          <li class="d-flex justify-content-between py-2 border-bottom">
+            <span class="text-muted">Spatial Database</span>
+            <span class="fw-semibold text-dark">PostgreSQL 18 + PostGIS</span>
+          </li>
+          <li class="d-flex justify-content-between py-2 border-bottom">
+            <span class="text-muted">Computer Vision</span>
+            <span class="fw-semibold text-dark">Ultralytics YOLOv8</span>
+          </li>
+          <li class="d-flex justify-content-between py-2 border-bottom">
+            <span class="text-muted">ML / Analytics</span>
+            <span class="fw-semibold text-dark">Scikit-learn, OpenCV</span>
+          </li>
+          <li class="d-flex justify-content-between py-2 border-bottom">
+            <span class="text-muted">Frontend Maps</span>
+            <span class="fw-semibold text-dark">Leaflet.js + OSM Tiles</span>
+          </li>
+          <li class="d-flex justify-content-between py-2">
+            <span class="text-muted">UI Architecture</span>
+            <span class="fw-semibold text-dark">Bootstrap 5.3 + Plus Jakarta</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quick Navigation -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="h5 mb-3"><i class="bi bi-lightning-charge-fill text-primary me-2"></i>Quick Navigation</h2>
+        <div class="d-grid gap-2">
+          <a class="btn btn-primary" href="/citizen/report">
+            <i class="bi bi-camera me-1"></i>Submit a Report
+          </a>
+          <a class="btn btn-outline-primary" href="/map">
+            <i class="bi bi-map me-1"></i>View Civic Map
+          </a>
+          <a class="btn btn-light" href="/admin/login">
+            <i class="bi bi-shield-lock me-1"></i>Admin Portal
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

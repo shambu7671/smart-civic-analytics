@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+{% block title %}SmartCivic AI — Intelligent Urban Issue Detection & Complaint Analytics{% endblock %}
+{% block content %}
+
+<!-- Hero Section: Modern White Canvas with Royal Blue Accents -->
+<section class="project-hero">
+  <div class="row align-items-center g-5">
+    <div class="col-lg-7">
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <div class="hero-pill">
+          <i class="bi bi-stars"></i>
+          <span data-i18n="hero_badge">CIVIC AI PLATFORM</span>
+        </div>
+        <div class="hero-pill bg-light border text-dark">
+          <i class="bi bi-mic text-primary"></i>
+          <span>Voice & Multilingual Enabled (EN • HI • MR)</span>
+        </div>
+      </div>
+      <h1 class="display-5 fw-bold mb-3" style="color: var(--text-main); line-height: 1.2;" data-i18n="hero_title">
+        AI-Based Smart Civic Issue Detection & Complaint Analytics
+      </h1>
+      <p class="lead text-muted mb-4" style="font-size: 1.15rem;" data-i18n="hero_desc">
+        Empowering citizens with AI-assisted road defect detection, voice-enabled reporting in local languages, automated municipal routing, and PostGIS GIS clustering.
+      </p>
+      
+      <div class="d-flex flex-wrap gap-3">
+        <a class="btn btn-primary btn-lg px-4 shadow-sm" href="/citizen/report">
+          <i class="bi bi-camera-fill me-2"></i><span data-i18n="btn_report_incident">Report an Incident</span>
+        </a>
+        <a class="btn btn-outline-primary btn-lg px-4" href="/map">
+          <i class="bi bi-geo-alt-fill me-2"></i><span data-i18n="btn_view_live_map">Explore Live Map</span>
+        </a>
+        <a class="btn btn-light btn-lg px-4 border" href="/login">
+          <i class="bi bi-box-arrow-in-right me-2"></i><span data-i18n="nav_sign_in">Portal Login</span>
+        </a>
+      </div>
+      
+      <div class="d-flex align-items-center gap-4 mt-4 pt-2 text-muted small">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-check-circle-fill text-primary"></i>
+          <span>Explainable AI Detection</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-check-circle-fill text-primary"></i>
+          <span>Meter-Accurate PostGIS</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-check-circle-fill text-primary"></i>
+          <span>Zero Identity Leakage</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-5">
+      <!-- Live Project Architecture Telemetry Card -->
+      <div class="hero-diagnostic-card">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-cpu-fill text-primary fs-5"></i>
+            <span class="fw-bold text-dark">System Telemetry</span>
+          </div>
+          <span class="badge badge-primary-soft">ONLINE</span>
+        </div>
+        
+        <div class="diagnostic-item">
+          <div>
+            <div class="fw-semibold text-dark">Computer Vision</div>
+            <div class="text-muted small">YOLOv8 Road Damage Model</div>
+          </div>
+          <span class="badge bg-light text-primary border border-primary-subtle">DEMO / YOLO</span>
+        </div>
+        
+        <div class="diagnostic-item">
+          <div>
+            <div class="fw-semibold text-dark">Spatial Database</div>
+            <div class="text-muted small">PostgreSQL 18 + PostGIS 3.6</div>
+          </div>
+          <span class="badge bg-light text-success border border-success-subtle">SRID 4326</span>
+        </div>
+        
+        <div class="diagnostic-item">
+          <div>
+            <div class="fw-semibold text-dark">DBSCAN Geospatial Clustering</div>
+            <div class="text-muted small">Haversine Earth-Radius Distance</div>
+          </div>
+          <span class="badge bg-light text-primary border border-primary-subtle">&epsilon; = 80m</span>
+        </div>
+        
+        <div class="diagnostic-item">
+          <div>
+            <div class="fw-semibold text-dark">Explainable Duplicate Check</div>
+            <div class="text-muted small">Category + Image + TF-IDF Text</div>
+          </div>
+          <span class="badge bg-light text-dark border">4-Signal Vector</span>
+        </div>
+        
+        <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+          <span class="small text-muted">Ready to test demo accounts?</span>
+          <a href="/login" class="small fw-bold text-primary">View Credentials &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Live Project Key Metrics -->
+<section class="row g-4 mb-5">
+  <div class="col-6 col-lg-3">
+    <div class="kpi p-4 text-center">
+      <div class="small-muted">Total Seeded Reports</div>
+      <div class="value text-primary">20+</div>
+      <div class="text-muted small mt-1">Geotagged with photos</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="kpi p-4 text-center">
+      <div class="small-muted">Clustered Issues</div>
+      <div class="value text-primary">8</div>
+      <div class="text-muted small mt-1">DBSCAN unified tickets</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="kpi p-4 text-center">
+      <div class="small-muted">Priority Factors</div>
+      <div class="value text-primary">4-Dim</div>
+      <div class="text-muted small mt-1">Normalized scoring</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="kpi p-4 text-center">
+      <div class="small-muted">Citizen Privacy</div>
+      <div class="value text-primary">100%</div>
+      <div class="text-muted small mt-1">Redacted public GIS view</div>
+    </div>
+  </div>
+</section>
+
+<!-- End-to-End Workflow Pipeline -->
+<section class="card mb-5 border-0 shadow-sm p-4 p-lg-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <span class="badge badge-primary-soft mb-2">SYSTEM ARCHITECTURE PIPELINE</span>
+      <h2 class="h3 mb-1">How the Intelligent Civic Workflow Operates</h2>
+      <p class="text-muted mb-0">From raw citizen mobile capture to municipal prioritization and resolution tracking.</p>
+    </div>
+    <a href="/about" class="btn btn-outline-primary btn-sm">Technical Specifications</a>
+  </div>
+  
+  <div class="pipeline-track">
+    <div class="pipeline-step">
+      <div class="step-number">Step 01</div>
+      <div class="step-title">Citizen Capture</div>
+      <div class="text-muted small mt-1">Photo, Category, & GPS Coordinate Validation</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-number">Step 02</div>
+      <div class="step-title">AI Inference</div>
+      <div class="text-muted small mt-1">YOLO Computer Vision Damage Classification</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-number">Step 03</div>
+      <div class="step-title">Duplicate Match</div>
+      <div class="text-muted small mt-1">Proximity, Visual & TF-IDF Semantic Check</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-number">Step 04</div>
+      <div class="step-title">DBSCAN Cluster</div>
+      <div class="text-muted small mt-1">Haversine Spatial Grouping into Unified Issues</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-number">Step 05</div>
+      <div class="step-title">Smart Priority</div>
+      <div class="text-muted small mt-1">Severity &times; Reports &times; Age &times; Location Matrix</div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-number">Step 06</div>
+      <div class="step-title">Dispatch & GIS</div>
+      <div class="text-muted small mt-1">Admin Action, Department Assignment, Resolution</div>
+    </div>
+  </div>
+</section>
+
+<!-- Core Features Grid -->
+<section class="mb-5">
+  <div class="text-center mb-5">
+    <span class="badge badge-primary-soft mb-2">ENGINEERING CAPABILITIES</span>
+    <h2 class="h2">Key Technological Highlights</h2>
+    <p class="text-muted mx-auto" style="max-width: 650px;">
+      Built from foundational civic engineering principles to replace redundant complaints with verifiable, data-backed city issues.
+    </p>
+  </div>
+  
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-card">
+        <div class="feature-icon-box">
+          <i class="bi bi-camera-fill"></i>
+        </div>
+        <h3 class="h5">Citizen Photo & Geotagging</h3>
+        <p class="text-muted mb-0">
+          Streamlined reporting interface with live browser GPS geolocation, interactive pin dragging, image MIME validation, and self-reported severity inputs.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-card">
+        <div class="feature-icon-box">
+          <i class="bi bi-bounding-box-circles"></i>
+        </div>
+        <h3 class="h5">Computer Vision Detection</h3>
+        <p class="text-muted mb-0">
+          YOLO-compatible architecture configured for potholes, road cracks, and surface damage with robust fallback handling and confidence thresholding.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-card">
+        <div class="feature-icon-box">
+          <i class="bi bi-bezier2"></i>
+        </div>
+        <h3 class="h5">Explainable Duplicate Detection</h3>
+        <p class="text-muted mb-0">
+          Combines PostGIS spatial radius queries, category matching, perceptual image hashing, and TF-IDF text similarity into transparent similarity scores.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-card">
+        <div class="feature-icon-box">
+          <i class="bi bi-diagram-3-fill"></i>
+        </div>
+        <h3 class="h5">Haversine DBSCAN Clustering</h3>
+        <p class="text-muted mb-0">
+          Groups multiple citizen complaints within a physical threshold (e.g. 80m) into a single operational civic issue to avoid overwhelming public works.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-card">
+        <div class="feature-icon-box">
+          <i class="bi bi-sort-numeric-down-alt"></i>
+        </div>
+        <h3 class="h5">Normalized Dynamic Prioritization</h3>
+        <p class="text-muted mb-0">
+          Calculates priority scores (0&ndash;100) dynamically considering severity, report density, ticket age, and location importance with admin-configurable weights.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="feature-card">
+        <div class="feature-icon-box">
+          <i class="bi bi-map-fill"></i>
+        </div>
+        <h3 class="h5">Interactive GIS & Heatmaps</h3>
+        <p class="text-muted mb-0">
+          Interactive Leaflet maps for both administrators and the public. Exposes verified issues and density heatmaps while strictly keeping citizen identities private.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section class="card border-0 shadow-sm p-5 text-center my-4" style="background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%); border: 1px solid var(--primary-border) !important;">
+  <div class="py-2 mx-auto" style="max-width: 700px;">
+    <h2 class="h3 mb-3">Explore the Live Smart Civic Platform</h2>
+    <p class="text-muted mb-4">
+      You can submit a live test report, review the interactive city map, or sign in to the administrator portal to review duplicate candidates and run DBSCAN clustering.
+    </p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a class="btn btn-primary btn-lg px-4" href="/citizen/report">
+        <i class="bi bi-plus-circle me-2"></i>Submit Live Report
+      </a>
+      <a class="btn btn-outline-primary btn-lg px-4" href="/map">
+        <i class="bi bi-map me-2"></i>Open Public GIS Map
+      </a>
+      <a class="btn btn-light btn-lg px-4" href="/admin/login">
+        <i class="bi bi-shield-lock me-2"></i>Admin Dashboard
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

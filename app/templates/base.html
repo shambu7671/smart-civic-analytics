@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}Smart Civic AI — Smart City Infrastructure System{% endblock %}</title>
+  
+  <!-- Modern Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Core Styles -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body data-page="{{ request.path }}">
+<!-- Skip to content for keyboard and screen reader accessibility -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<div id="a11y-live-region" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Sleek White Sticky Navbar with Single Primary Accent -->
+<nav class="navbar navbar-expand-lg navbar-civic sticky-top" role="navigation" aria-label="Main Navigation">
+  <div class="container-fluid px-lg-5 px-3">
+    <a class="brand-badge navbar-brand" href="/" aria-label="SmartCivic AI Home">
+      <div class="brand-icon">
+        <i class="bi bi-shield-check"></i>
+      </div>
+      <span>SmartCivic<span class="text-primary">.AI</span></span>
+      <span class="badge badge-primary-soft d-none d-md-inline-block" style="font-size: 0.65rem; padding: 0.35rem 0.6rem;" data-i18n="prototype_badge">PROTOTYPE</span>
+    </a>
+    
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="Toggle navigation" aria-controls="nav" aria-expanded="false">
+      <i class="bi bi-list fs-2 text-dark"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-1">
+        <li class="nav-item">
+          <a class="nav-link {{ 'active' if request.path == '/' else '' }}" href="/">
+            <i class="bi bi-house-door me-1"></i><span data-i18n="nav_overview">Overview</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ 'active' if request.path == '/map' else '' }}" href="/map">
+            <i class="bi bi-geo-alt me-1"></i><span data-i18n="nav_map">Civic Map</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ 'active' if request.path == '/about' else '' }}" href="/about">
+            <i class="bi bi-diagram-3 me-1"></i><span data-i18n="nav_architecture">Architecture</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {{ 'active' if request.path == '/contact' else '' }}" href="/contact">
+            <i class="bi bi-question-circle me-1"></i><span data-i18n="nav_help">Help & FAQ</span>
+          </a>
+        </li>
+      </ul>
+      
+      <!-- Multilingual Selector & Accessibility Hub -->
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div id="lang-selector-container"></div>
+        <div id="a11y-menu-container"></div>
+        <!-- Dynamic User Authentication Pill / Actions -->
+        <div id="nav-user" class="d-flex align-items-center gap-2"></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Page Container -->
+<main id="main-content" class="container-fluid px-lg-5 px-3 py-4" tabindex="-1">
+  <div id="global-alert" class="alert d-none shadow-sm mb-4" role="alert" aria-live="assertive"></div>
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Modern Clean White Footer -->
+<footer class="footer-civic mt-auto" role="contentinfo">
+  <div class="container-fluid px-lg-5 px-3">
+    <div class="row g-4 align-items-center justify-content-between">
+      <div class="col-md-6">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <div class="brand-icon" style="width: 28px; height: 28px; font-size: 0.85rem; border-radius: 7px;">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <span class="fw-bold text-dark">SmartCivic<span class="text-primary">.AI</span></span>
+          <span class="text-muted small" data-i18n="footer_academic">• Academic Project Web Platform</span>
+        </div>
+        <p class="text-muted small mb-0" data-i18n="footer_summary">
+          AI-assisted road-damage detection, explainable duplicate analysis, haversine DBSCAN clustering, and PostGIS complaint analytics.
+        </p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <div class="d-flex flex-wrap justify-content-md-end gap-3 text-muted small mb-2">
+          <span><i class="bi bi-check2-circle text-primary me-1"></i>Flask 3.1</span>
+          <span><i class="bi bi-check2-circle text-primary me-1"></i>PostgreSQL 18</span>
+          <span><i class="bi bi-check2-circle text-primary me-1"></i>PostGIS 3.6</span>
+          <span><i class="bi bi-check2-circle text-primary me-1"></i>YOLOv8 Engine</span>
+        </div>
+        <div class="text-muted small">
+          Developed for Academic Research & Demonstration • <a href="/about" class="text-primary fw-semibold">System Specifications</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Core JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+<script src="{{ url_for('static', filename='js/accessibility.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

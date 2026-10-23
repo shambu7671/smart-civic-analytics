@@ -1,0 +1,5 @@
+async function loadSettings(){const r=await api('/api/admin/settings');document.querySelector('#settings tbody').innerHTML=r.data.map(s=>`<tr><td><code>${esc(s.key)}</code></td><td><input class="form-control form-control-sm setting" data-key="${esc(s.key)}" value="${esc(s.value)}"></td><td class="small-muted">${esc(s.description||'')}</td><td><button class="btn btn-sm btn-outline-primary" onclick="saveSetting('${esc(s.key)}',this)">Save</button></td></tr>`).join('')}
+async function saveSetting(key,btn){const v=btn.closest('tr').querySelector('.setting').value;try{await api(`/api/admin/settings/${encodeURIComponent(key)}`,{method:'PATCH',body:JSON.stringify({value:v})});showAlert('Setting updated.');}catch(e){showAlert(e.message,'danger')}}
+document.addEventListener('DOMContentLoaded',()=>{if(document.getElementById('settings'))loadSettings()});
+
+document.getElementById('run-clustering-settings')?.addEventListener('click',async()=>{try{const r=await api('/api/admin/clustering/run',{method:'POST'});document.getElementById('clustering-result-settings').textContent=`Processed ${r.data.length} cluster result(s).`;}catch(e){showAlert(e.message,'danger')}});
