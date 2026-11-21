@@ -1,7 +1,7 @@
 """
 Health check and system status endpoint.
 Registered as /health and /api/health.
-Used by Docker HEALTHCHECK, load balancers, and uptime monitors.
+Used by local health checks and uptime monitors.
 """
 from datetime import datetime, timezone
 import logging

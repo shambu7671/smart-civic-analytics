@@ -54,6 +54,15 @@ MIGRATIONS = [
             "CREATE EXTENSION IF NOT EXISTS postgis",
         ],
     },
+    {
+        "id": "004_firebase_auth_identity",
+        "description": "Link application users to Firebase identities",
+        "sql": [
+            "ALTER TABLE users ADD COLUMN IF NOT EXISTS firebase_uid VARCHAR(128)",
+            "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_firebase_uid ON users (firebase_uid)",
+            "ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL",
+        ],
+    },
 ]
 
 

@@ -24,23 +24,19 @@ def save_image(file_storage):
         path.unlink(missing_ok=True)
         raise ValueError("Uploaded content is not a readable image.")
 
-    # Store cloud uploads in Supabase. Keep a local copy for EXIF and inference
-    # during this invocation; Vercel's local filesystem is ephemeral.
-    vercel = bool(os.getenv("VERCEL"))
+    # Store report photos in Supabase when configured; local development can
+    # continue using the persistent uploads directory.
     try:
         from app.services.supabase_storage_service import is_supabase_storage_enabled, upload_image
         if is_supabase_storage_enabled():
             storage_path = upload_image(str(path), f"uploads/{filename}")
             return storage_path, filename, str(path)
-        if vercel:
-            raise ValueError("Supabase Storage must be configured for persistent report images on Vercel.")
     except (ValueError, RuntimeError) as exc:
         path.unlink(missing_ok=True)
         raise ValueError(str(exc)) from exc
     except Exception:
-        if vercel:
-            path.unlink(missing_ok=True)
-            raise ValueError("Could not save the report image to Supabase Storage. Please try again.")
+        path.unlink(missing_ok=True)
+        raise ValueError("Could not save the report image to Supabase Storage. Please try again.")
 
     return str(path), filename, str(path)
 

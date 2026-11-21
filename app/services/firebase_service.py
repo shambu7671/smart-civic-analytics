@@ -1,9 +1,9 @@
 """
-Firebase Storage Integration Service
-====================================
-Uploads and manages report images in Firebase Cloud Storage.
-This enables persistent cloud image storage when running on serverless
-platforms like Vercel where the local filesystem is ephemeral and read-only.
+Firebase Authentication and legacy Firebase Storage helpers.
+============================================================
+Firebase Authentication is used for account sign-in. Existing Firebase Storage
+helpers remain only to read legacy image references; new photos use Supabase
+Storage when configured, or the local uploads folder during development.
 """
 import os
 import json

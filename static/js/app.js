@@ -32,7 +32,7 @@ async function initNav(){
       const isAdmin=u.role==='ADMIN';
       box.innerHTML=`
         <div class="d-flex align-items-center gap-2 flex-wrap">
-          ${!isAdmin ? `
+          ${!isAdmin && !u.demo ? `
             <a class="btn btn-sm btn-primary d-flex align-items-center gap-1 shadow-sm" href="/citizen/report">
               <i class="bi bi-plus-circle me-1"></i><span>${t('nav_report_issue', 'Report Issue')}</span>
             </a>
@@ -40,7 +40,7 @@ async function initNav(){
           <div class="user-status-pill d-flex align-items-center gap-2">
             <span class="status-dot"></span>
             <span class="small fw-semibold">${esc(u.name)}</span>
-            <span class="badge ${isAdmin ? 'bg-primary text-white' : 'bg-light text-dark border'} ms-1" style="font-size:0.65rem;">${esc(u.role)}</span>
+            <span class="badge ${isAdmin ? 'bg-primary text-white' : 'bg-light text-dark border'} ms-1" style="font-size:0.65rem;">${u.demo ? 'READ-ONLY DEMO' : esc(u.role)}</span>
           </div>
           <a class="btn btn-sm btn-outline-primary" href="${isAdmin ? '/admin/dashboard' : '/citizen/dashboard'}">
             <i class="bi bi-speedometer2 me-1"></i><span>${t('nav_dashboard', 'Dashboard')}</span>
@@ -55,14 +55,14 @@ async function initNav(){
     } else {
       box.innerHTML=`
         <div class="d-flex align-items-center gap-2">
-          <a class="btn btn-sm btn-light border" href="/login"><i class="bi bi-box-arrow-in-right me-1"></i><span>${t('nav_sign_in', 'Sign In')}</span></a>
+          <a class="btn btn-sm btn-light border" href="/citizen/login"><i class="bi bi-box-arrow-in-right me-1"></i><span>${t('nav_sign_in', 'Sign In')}</span></a>
           <a class="btn btn-sm btn-primary shadow-sm" href="/register"><i class="bi bi-person-plus me-1"></i><span>${t('nav_register', 'Register')}</span></a>
         </div>`;
     }
   }catch(_){
     box.innerHTML=`
       <div class="d-flex align-items-center gap-2">
-        <a class="btn btn-sm btn-light border" href="/login"><i class="bi bi-box-arrow-in-right me-1"></i><span>${t('nav_sign_in', 'Sign In')}</span></a>
+        <a class="btn btn-sm btn-light border" href="/citizen/login"><i class="bi bi-box-arrow-in-right me-1"></i><span>${t('nav_sign_in', 'Sign In')}</span></a>
         <a class="btn btn-sm btn-primary shadow-sm" href="/register"><i class="bi bi-person-plus me-1"></i><span>${t('nav_register', 'Register')}</span></a>
       </div>`;
   }

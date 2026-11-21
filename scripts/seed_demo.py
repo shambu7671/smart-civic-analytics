@@ -5,7 +5,6 @@ from PIL import Image, ImageDraw, ImageFont
 
 from app import create_app, db
 from app.models import IssueCategory, User, Report, Issue, IssueReport, AIDetection, DuplicateCandidate, IssueStatusHistory, IssueAssignment
-from app.utils.security import hash_password
 from app.services.clustering_service import cluster_all_reports
 from app.services.priority_service import recalculate_issue_priority
 from app.services.ai_service import detect_report
@@ -50,8 +49,6 @@ def demo_image(path, label, idx):
 
 
 def main():
-    if os.getenv("VERCEL") or os.getenv("FLASK_ENV", "").lower() == "production":
-        raise SystemExit("Demo seeding is disabled in production environments.")
     if os.getenv("ALLOW_DEMO_SEED", "").lower() != "true":
         raise SystemExit("Set ALLOW_DEMO_SEED=true to seed and reset a local demo database.")
     app = create_app()
@@ -66,11 +63,11 @@ def main():
         db.session.execute(text("ALTER SEQUENCE issue_reports_id_seq RESTART WITH 1"))
         db.session.commit()
 
-        admin = User(name='System Administrator', email='admin@smartcivic.local', mobile='9000000100', password_hash=hash_password('Admin@12345'), role='ADMIN')
+        admin = User(name='System Administrator', email='admin@smartcivic.local', mobile='9000000100', password_hash=None, role='ADMIN')
         db.session.add(admin)
         citizens=[]
         for name,email,mobile in DEMO_USERS:
-            u=User(name=name,email=email,mobile=mobile,password_hash=hash_password('Citizen@12345'),role='CITIZEN')
+            u=User(name=name,email=email,mobile=mobile,password_hash=None,role='CITIZEN')
             db.session.add(u); citizens.append(u)
         db.session.flush()
 
@@ -125,8 +122,7 @@ def main():
             db.session.add(DuplicateCandidate(new_report_id=a.id,existing_report_id=b.id,distance_meters=dist,category_similarity=1.0,image_similarity=0.86,text_similarity=0.72,overall_similarity=0.84,decision='PENDING'))
         db.session.commit()
         print('Demo data seeded successfully.')
-        print('Admin: admin@smartcivic.local / Admin@12345')
-        print('Citizen: aarav@example.com / Citizen@12345')
+        print('Demo identities: admin@smartcivic.local and aarav@example.com (create verified Firebase users before signing in).')
         print(f'Reports: {Report.query.count()} | Issues: {Issue.query.count()} | Citizens: {User.query.filter_by(role="CITIZEN").count()}')
 
 if __name__ == '__main__':

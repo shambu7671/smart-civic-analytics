@@ -12,19 +12,25 @@ from app.utils.security import require_role, current_user_id
 pages_bp = Blueprint("pages", __name__)
 
 @pages_bp.get("/")
-def home(): return render_template("home.html")
+def home(): return render_template("home.html", demo_login_enabled=current_app.config.get("LOCAL_DEMO_LOGIN_ENABLED", False))
 
 @pages_bp.get("/about")
 def about(): return render_template("about.html")
 
 @pages_bp.get("/contact")
-def contact(): return render_template("contact.html")
+def contact(): return render_template("contact.html", demo_login_enabled=current_app.config.get("LOCAL_DEMO_LOGIN_ENABLED", False))
 
 @pages_bp.get("/map")
 def public_map_page(): return render_template("public_map.html")
 
 @pages_bp.get("/login")
-def login_page(): return render_template("auth/login.html")
+def login_page(): return render_template("auth/login.html", demo_login_enabled=current_app.config.get("LOCAL_DEMO_LOGIN_ENABLED", False))
+
+@pages_bp.get("/citizen/login")
+def citizen_login_page(): return render_template("auth/login.html", citizen_login=True, demo_login_enabled=current_app.config.get("LOCAL_DEMO_LOGIN_ENABLED", False))
+
+@pages_bp.get("/demo/login")
+def demo_login_page(): return render_template("auth/login.html", demo_login_only=True, demo_login_enabled=current_app.config.get("LOCAL_DEMO_LOGIN_ENABLED", False))
 
 @pages_bp.get("/register")
 def register_page(): return render_template("auth/register.html")
@@ -58,7 +64,11 @@ def profile_page(): return render_template("citizen/profile.html")
 def tracking_page(): return render_template("citizen/tracking.html")
 
 @pages_bp.get("/admin/login")
-def admin_login_page(): return render_template("auth/login.html", admin_login=True)
+def admin_login_page(): return render_template(
+    "auth/login.html",
+    admin_login=True,
+    admin_demo_login_enabled=current_app.config.get("LOCAL_DEMO_LOGIN_ENABLED", False),
+)
 
 @pages_bp.get("/admin/dashboard")
 @require_role("ADMIN")

@@ -7,26 +7,18 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-if os.getenv("VERCEL") and not os.getenv("SECRET_KEY"):
-    raise RuntimeError("SECRET_KEY must be set for a Vercel deployment.")
-if os.getenv("VERCEL") and not os.getenv("DATABASE_URL"):
-    raise RuntimeError("DATABASE_URL must point to the Supabase PostgreSQL session pooler.")
-
-
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY") or secrets.token_urlsafe(32)
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # Keep a small reusable pool for serverless invocations. Supabase session
-    # pooler connection strings are recommended for production deployments.
+    # Keep a small reusable connection pool for local development.
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
         "pool_recycle": 300,
         "pool_size": 2,
         "max_overflow": 0,
     }
-    # For Vercel serverless environments, writable directory is /tmp
-    _raw_upload = os.getenv("UPLOAD_FOLDER", "/tmp/uploads" if os.getenv("VERCEL") else "uploads")
+    _raw_upload = os.getenv("UPLOAD_FOLDER", "uploads")
     UPLOAD_FOLDER = _raw_upload if os.path.isabs(_raw_upload) else str(BASE_DIR / _raw_upload)
     MAX_CONTENT_LENGTH = int(float(os.getenv("MAX_UPLOAD_SIZE_MB", "8")) * 1024 * 1024)
     AI_MODE = os.getenv("AI_MODE", "demo").lower()
@@ -64,8 +56,11 @@ class Config:
     # Optional legacy Firebase Storage access (new uploads use Supabase Storage).
     FIREBASE_CREDENTIALS_JSON = os.getenv("FIREBASE_CREDENTIALS_JSON")
     FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")
-    FIREBASE_WEB_API_KEY = os.getenv("FIREBASE_WEB_API_KEY")
-    FIREBASE_PROJECT_ID = os.getenv("FIREBASE_PROJECT_ID")
+    # Direct demo identities are for local development only; never enable in production.
+    LOCAL_DEMO_LOGIN_ENABLED = (
+        os.getenv("LOCAL_DEMO_LOGIN_ENABLED", "true").lower() == "true"
+        and os.getenv("FLASK_ENV", "").lower() != "production"
+    )
     # ─────────────────────────────────────────────────────────────────────────
     # ── Geotag / EXIF GPS verification ───────────────────────────────────────
     # Maximum allowed distance (metres) between EXIF GPS and submitted coordinates
@@ -74,7 +69,6 @@ class Config:
     # "warn"   → mismatch is logged and stored but submission is still accepted.
     # "strict" → MISMATCH result blocks the submission with a 400 error.
     GEOTAG_ENFORCEMENT_MODE = os.getenv("GEOTAG_ENFORCEMENT_MODE", "warn").lower()
-    # Vercel instances must not run schema DDL or seed writes during import.
-    SKIP_DB_INIT = os.getenv("SKIP_DB_INIT", "true" if os.getenv("VERCEL") else "false").lower() == "true"
+    SKIP_DB_INIT = os.getenv("SKIP_DB_INIT", "false").lower() == "true"
     # ────────────────────────────────────────────────────────────────────────
 

@@ -1,5 +1,5 @@
 from pathlib import Path
-from flask import Flask
+from flask import Flask, request, session
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -50,6 +50,20 @@ def create_app(test_config=None):
     app.register_blueprint(health_bp)
 
     from app.utils.security import ensure_csrf_token
+    from app.utils.api import error
+
+    @app.before_request
+    def enforce_read_only_demo_session():
+        if (
+            session.get("demo_login")
+            and request.method in {"POST", "PUT", "PATCH", "DELETE"}
+            and request.path not in {
+                "/api/auth/logout", "/api/auth/login", "/api/auth/register",
+                "/api/auth/demo-login", "/api/auth/admin-demo-login",
+            }
+        ):
+            return error("Demo accounts are read-only. Sign in as a citizen to submit or edit reports.", status=403)
+
     @app.context_processor
     def inject_security_helpers():
         return {"csrf_token": ensure_csrf_token()}

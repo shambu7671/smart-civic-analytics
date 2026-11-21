@@ -253,17 +253,7 @@ This creates:
 - pending duplicate candidates
 - synthetic report images
 
-### Local demo credentials
-
-**Administrator**
-- Email: `admin@smartcivic.local`
-- Password: `Admin@12345`
-
-**Citizen**
-- Email: `aarav@example.com`
-- Password: `Citizen@12345`
-
-These credentials are intended only for local academic demonstration.
+The demo seeder creates synthetic application records, including local citizen and administrator identities.
 
 ## 11. AI / YOLO integration
 
@@ -477,14 +467,13 @@ Login with an `ADMIN` role. Citizen sessions are not authorized for admin pages 
 
 This is a functional prototype architecture. The DEMO AI path is clearly labelled and must not be presented as a trained-model benchmark. Real AI performance, precision/recall, duplicate-detection effectiveness and governance impact require a separately trained/evaluated dataset and an empirical study.
 
-## 24. Deploy on Vercel with Firebase Auth and Supabase
+## 24. Local setup with Firebase and Supabase
 
-The app uses Firebase Authentication for email/password identities, Supabase Postgres (including PostGIS) for application data, and a private Supabase Storage bucket for report photos. The Flask app connects directly to the Supabase PostgreSQL session pooler through `DATABASE_URL`; the Supabase browser API key is not needed. Photos are served through an authenticated owner/admin route and are not public.
+The app uses local full-name/password accounts, PostgreSQL with PostGIS for application data, and optional private Supabase Storage for report photos. Configure local values in `.env`; keep service keys private. Initialize the database with `database/schema.sql`, then run the app locally.
 
-1. In Supabase, create or select a project, enable the `postgis` extension, and copy its **Session pooler** connection string. Use it as Vercel's `DATABASE_URL` with `sslmode=require`.
-2. For a new Supabase database, run `database/schema.sql` and then `database/seed.sql` in the SQL Editor (the schema enables PostGIS and locks down the exposed API roles). For an existing Smart Civic database, apply `database/migrations/20261024_firebase_auth_identity.sql`, `database/migrations/20261024_supabase_api_lockdown.sql`, and `database/migrations/20261024_supabase_private_report_storage.sql` before deployment.
-3. In Firebase Console, enable **Authentication → Email/Password**. Add the eventual Vercel hostname under Authentication authorized domains so email verification links are accepted.
-4. Configure Vercel environment variables for Production (and Preview if wanted): `DATABASE_URL`, a long random `SECRET_KEY`, `SESSION_COOKIE_SECURE=true`, `FIREBASE_WEB_API_KEY`, `FIREBASE_PROJECT_ID`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, and `SUPABASE_STORAGE_BUCKET=report-images`. Create a Supabase Secret API key for this backend and keep it server-side; never expose it through frontend variables or commit it. A legacy service-role JWT can be supplied as `SUPABASE_SERVICE_ROLE_KEY` if needed. Firebase sign-in is verified by the server against the Firebase Auth REST API, so no Firebase Admin service-account private key is required.
-5. Deploy the GitHub repository to Vercel. Vercel skips `create_all` and seed writes at startup; the SQL setup above must be complete first. Existing admin records keep their role when their verified Firebase email is linked on first sign-in. Newly registered accounts are always citizens; grant admin roles only through trusted database administration.
+### Citizen and demo sign-in
 
-Firebase email/password accounts must verify their email before the app creates or links the corresponding user row. Existing users must sign up or sign in through the same Firebase project with the email already stored in Smart Civic.
+- `/citizen/login` signs in with a unique full name and password.
+- `/demo/login` offers one-click Citizen Demo and Admin Demo sessions using local demo accounts; no external auth credentials are needed.
+- Demo sessions are read-only. The admin demo can inspect admin pages, while all write requests are rejected.
+- Set `LOCAL_DEMO_LOGIN_ENABLED=false` in `.env` to disable local demo access. It is disabled automatically when `FLASK_ENV=production`.
